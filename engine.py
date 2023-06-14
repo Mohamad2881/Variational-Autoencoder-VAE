@@ -1,16 +1,10 @@
-from tqdm import tqdm
-import torch
 
-
-def save_checkpoint(state, filename="my_checkpoint.pth.tar"):
-    print("=> Saving checkpoint")
-    torch.save(state, filename)
-
+from tqdm.auto import tqdm
 
 def train_step(model, data_loader, optimizer, loss_fn, device):
     model.train()
     train_loss = 0
-
+    
     for (images, _) in tqdm(data_loader):
         images = images.to(device)
         # Forward pass
@@ -34,7 +28,7 @@ def train_step(model, data_loader, optimizer, loss_fn, device):
     return train_loss
 
 
-def train(model, train_dataloader, optimizer, loss_fn, epochs, device, save_model=None):
+def train(model, train_dataloader, optimizer, loss_fn, epochs, device):
     results = {"train_loss": []}
 
     model.to(device)
@@ -44,11 +38,5 @@ def train(model, train_dataloader, optimizer, loss_fn, epochs, device, save_mode
 
         print(f"EPOCH: {epoch:} | train_loss: {train_loss: .4f}")
 
-        if save_model:
-            checkpoint = {"state_dict": model.state_dict(),
-                          "optimizer": optimizer.state_dict(),
-                          "epoch": epoch}
-
-            save_checkpoint(checkpoint, save_model)
 
     return results
